@@ -128,7 +128,7 @@ if __name__ == '__main__':
     main_args.add_argument('-d', '--decode_files', nargs='*', metavar='file', type=str, help='the list of captured files to decode. All the new captures files will be decode automatically if the --capture switch is set. Read the files from the standard input if the list of files is empty and there is no capture work.')
     main_args.add_argument('-m', '--monitor_calls', default=None, action='store_true', help='start the call monitor mode. The CALL/RING/DISCONNECT events will be used to start/stop the capture automatically')
     main_args.add_argument('-p', '--password', default=None, metavar='password', type=str, help='the password to login to the box. If not set and --login_not_required is set to False, then the password will be read from the console')
-    main_args.add_argument('-u', '--username', default='root', metavar='username', type=str, help='the username to login to the box (Default:\'root\')')
+    main_args.add_argument('-u', '--username', default=None, metavar='username', type=str, help='the username to login to the box (Default:\'root\')')
     main_args.add_argument('-s', '--show_interfaces', default=None, action='store_true', help='shows the interfaces as key/description pairs')
 
     ext_args.add_argument('--config_file', default='fritzcap.conf', metavar='path_to_file', type=file, help='the fritzcap configuration file (Default:\'fritzcap.conf\')')
@@ -204,7 +204,6 @@ if __name__ == '__main__':
     ######################################
     Log().file_config(args.logging_config)
     logger = Log().getLogger()
-
     # print out debug data
     logger.info("FritzCap version %s started." % fritzcap_version)
     if (logger.isEnabledFor(logging.DEBUG)):
