@@ -33,7 +33,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ##################################################################################
 
-import struct, datetime, array
+import struct, datetime, array, os, subprocess
 
 from log import Log
 
@@ -55,6 +55,7 @@ class G711Decoder:
           {'len': 214, 'chunk': 160, 'offs': 54, 'encap' : 'DSLETH'  },     # DSL (ETH)
           {'len': 294, 'chunk': 240, 'offs': 54, 'encap' : 'DSLETH'  },     # DSL (ETH)
           {'len': 55,  'chunk': 0,   'offs': 54, 'encap' : 'DSLETH'  },     # DSL (ETH) ComfortNoise
+          {'len': 236, 'chunk': 160, 'offs': 76, 'encap' : 'DSLPPPoE' }, # DSL (PPPoE)
     ]
 
     # Table lookup G.711 A -> PCM 16
@@ -381,3 +382,8 @@ class G711Decoder:
                             self.logger.debug("Total mixed samples written: %d (duration %s h)" % (total_samples_written,  str(datetime.time(duration_in_seconds // 3600, (duration_in_seconds % 3600) // 60, duration_in_seconds % 60))))
             # Close
             sd['fo'].close()
+            os.remove("%s_%d_.wav" % (self.file, sd['index']))
+        sdmixWav = "%s_mix_%d_%d.wav" % (self.file, leader['index'], follower['index'])
+        cmd = 'lame --quiet --preset insane %s' % sdmixWav
+        subprocess.call(cmd, shell=True)
+        os.remove(sdmixWav)
